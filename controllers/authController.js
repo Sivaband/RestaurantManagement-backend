@@ -65,11 +65,12 @@ exports.register = async (req, res, next) => {
 // ── POST /auth/login ───────────────────────────────────────────────────────────
 exports.login = async (req, res, next) => {
   try {
-    console.log(req.body);
-    const { email, password } = req.body;
-    if (!email || !password) return error(res, 'Email and password required', 400);
+    console.log("🔥 Login HIT");
 
-    const { rows } = await query(`
+    const { email, password } = req.body;
+    console.log("📩 Input:", email);
+
+    const result = await query(`
       SELECT u.id, u.name, u.email, u.password, u.role,
              u.restaurant_id, u.is_active,
              r.is_active AS restaurant_active
@@ -79,7 +80,9 @@ exports.login = async (req, res, next) => {
       [email.toLowerCase()]
     );
 
-    const user = rows[0];
+    console.log("📦 Query result:", result);
+
+    const user = result.rows[0];
     if (!user || !user.is_active || !user.restaurant_active) {
       return error(res, 'Invalid credentials', 401);
     }
